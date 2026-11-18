@@ -1,0 +1,635 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>AI Debate Schedule</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      min-height: 100vh;
+      padding: 35px 20px;
+
+      /* Animated Red → Yellow → Red Background */
+      background: linear-gradient(
+        120deg,
+        #8b0000,
+        #ff1a1a,
+        #ffd700,
+        #ffcc00,
+        #ff1a1a,
+        #8b0000
+      );
+
+      background-size: 400% 400%;
+      animation: diagonalGradient 12s ease-in-out infinite;
+
+      color: #111;
+    }
+
+    @keyframes diagonalGradient {
+      0% {
+        background-position: 0% 0%;
+      }
+
+      25% {
+        background-position: 100% 0%;
+      }
+
+      50% {
+        background-position: 100% 100%;
+      }
+
+      75% {
+        background-position: 0% 100%;
+      }
+
+      100% {
+        background-position: 0% 0%;
+      }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1500px;
+      margin: auto;
+
+      background: rgba(255, 255, 255, 0.93);
+      border-radius: 20px;
+
+      padding: 28px;
+
+      box-shadow:
+        0 15px 45px rgba(0, 0, 0, 0.35),
+        0 0 30px rgba(255, 215, 0, 0.35);
+
+      backdrop-filter: blur(8px);
+    }
+
+    /* Header */
+
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .header h1 {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: 1px;
+
+      background: linear-gradient(
+        90deg,
+        #8b0000,
+        #ff0000,
+        #d4a000,
+        #8b0000
+      );
+
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      margin-bottom: 8px;
+    }
+
+    .mentor {
+      font-size: 17px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .mentor a {
+      color: #0a66c2;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .mentor a:hover {
+      text-decoration: underline;
+    }
+
+    /* Legend */
+
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin: 20px 0 25px;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .legend-box {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+    }
+
+    .accept {
+      background: #16a34a;
+      color: white;
+    }
+
+    .reject {
+      background: #dc2626;
+      color: white;
+    }
+
+    /* Table */
+
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 14px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1100px;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+
+      background: white;
+
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    th {
+      padding: 16px 12px;
+      color: white;
+      font-size: 15px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    th:first-child {
+      background: #7f1d1d;
+    }
+
+    th:nth-child(2) {
+      background: #92400e;
+    }
+
+    /* Debate 1 = ACCEPT */
+
+    th:nth-child(3) {
+      background: #15803d;
+      position: relative;
+    }
+
+    th:nth-child(3)::after {
+      content: "ACCEPT";
+      display: block;
+      font-size: 10px;
+      margin-top: 4px;
+      opacity: 0.9;
+      letter-spacing: 1px;
+    }
+
+    /* Debate 2 = REJECT */
+
+    th:nth-child(4) {
+      background: #b91c1c;
+      position: relative;
+    }
+
+    th:nth-child(4)::after {
+      content: "REJECT";
+      display: block;
+      font-size: 10px;
+      margin-top: 4px;
+      opacity: 0.9;
+      letter-spacing: 1px;
+    }
+
+    th:nth-child(5) {
+      background: #78350f;
+      min-width: 300px;
+    }
+
+    td {
+      padding: 14px 12px;
+      text-align: center;
+      vertical-align: middle;
+
+      border-bottom: 1px solid #ddd;
+      border-right: 1px solid #eee;
+
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td:last-child {
+      border-right: none;
+    }
+
+    tbody tr {
+      transition: all 0.25s ease;
+    }
+
+    tbody tr:hover {
+      transform: scale(1.005);
+      box-shadow: 0 5px 18px rgba(0, 0, 0, 0.18);
+    }
+
+    /* Date */
+
+    .date {
+      font-weight: 800;
+      white-space: nowrap;
+      color: #7f1d1d;
+    }
+
+    /* Coordinator */
+
+    .coordinator {
+      font-weight: 800;
+      border-radius: 8px;
+    }
+
+    /* Team Colors
+       Same team always receives the same color.
+    */
+
+    .team-nexora {
+      background: #dbeafe;
+      color: #1e3a8a;
+    }
+
+    .team-tech {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .team-elite {
+      background: #ede9fe;
+      color: #5b21b6;
+    }
+
+    .team-vox {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .team-survivors {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .team-team03 {
+      background: #cffafe;
+      color: #155e75;
+    }
+
+    .team-starrex {
+      background: #fce7f3;
+      color: #9d174d;
+    }
+
+    .team-aura {
+      background: #ffedd5;
+      color: #9a3412;
+    }
+
+    .team-memory {
+      background: #ecfccb;
+      color: #3f6212;
+    }
+
+    /* Debate cells */
+
+    .debate-cell {
+      font-weight: 800;
+      border-left: 4px solid transparent;
+    }
+
+    .debate1 {
+      border-left-color: #16a34a;
+    }
+
+    .debate2 {
+      border-left-color: #dc2626;
+    }
+
+    /* Topic */
+
+    .topic {
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      line-height: 1.45;
+      min-width: 300px;
+    }
+
+    /* Footer */
+
+    .footer {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 13px;
+      color: #555;
+      font-weight: 600;
+    }
+
+    /* Mobile */
+
+    @media (max-width: 768px) {
+      body {
+        padding: 15px 8px;
+      }
+
+      .container {
+        padding: 16px 10px;
+        border-radius: 14px;
+      }
+
+      .header h1 {
+        font-size: 28px;
+      }
+
+      .mentor {
+        font-size: 14px;
+      }
+
+      .legend {
+        gap: 12px;
+      }
+
+      th,
+      td {
+        padding: 12px 9px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="header">
+      <h1>AI Debate Schedule</h1>
+
+      <div class="mentor">
+        Mentor:
+        <a
+          href="https://www.linkedin.com/in/dr-selvakumar-r-561851425/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Dr.R.Selvakumar
+        </a>
+      </div>
+    </div>
+
+    <!-- Legend -->
+
+    <div class="legend">
+
+      <div class="legend-item">
+        <span class="legend-box accept"></span>
+        Debate 1 — ACCEPT
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-box reject"></span>
+        Debate 2 — REJECT
+      </div>
+
+    </div>
+
+    <!-- Schedule -->
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Coordinator</th>
+            <th>Debate 1</th>
+            <th>Debate 2</th>
+            <th>Debate Topic</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td class="date">18.11.26</td>
+
+            <td class="coordinator team-nexora">
+              Nexora
+            </td>
+
+            <td class="debate-cell debate1 team-elite">
+              Elite Crew
+            </td>
+
+            <td class="debate-cell debate2 team-tech">
+              Tech Titans
+            </td>
+
+            <td class="topic">
+              Should the Use of AI Tools Be Allowed in Examinations?
+            </td>
+          </tr>
+
+          <tr>
+            <td class="date">20.11.26</td>
+
+            <td class="coordinator team-tech">
+              Tech Titans
+            </td>
+
+            <td class="debate-cell debate1 team-vox">
+              Vox Victors
+            </td>
+
+            <td class="debate-cell debate2 team-survivors">
+              Survivors
+            </td>
+
+            <td class="topic">
+              Is Social Media Doing More Harm Than Good?
+            </td>
+          </tr>
+
+          <tr>
+            <td class="date">20.11.26</td>
+
+            <td class="coordinator team-elite">
+              Elite Crew
+            </td>
+
+            <td class="debate-cell debate1 team-team03">
+              Team-03
+            </td>
+
+            <td class="debate-cell debate2 team-memory">
+              Memory Rebooters
+            </td>
+
+            <td class="topic">
+              Open-Source Software vs. Proprietary Software
+            </td>
+          </tr>
+
+          <tr>
+            <td class="date">21.11.26</td>
+
+            <td class="coordinator team-vox">
+              Vox Victors
+            </td>
+
+            <td class="debate-cell debate1 team-nexora">
+              Nexora
+            </td>
+
+            <td class="debate-cell debate2 team-starrex">
+              StarRex
+            </td>
+
+            <td class="topic">
+              Cybersecurity vs. Privacy: Which Is More Important?
+            </td>
+          </tr>
+
+          <tr>
+            <td class="date">21.11.26</td>
+
+            <td class="coordinator team-survivors">
+              Survivors
+            </td>
+
+            <td class="debate-cell debate1 team-aura">
+              Aura Tech
+            </td>
+
+            <td class="debate-cell debate2 team-elite">
+              Elite Crew
+            </td>
+
+            <td class="topic">
+              Is Generative AI Making Students More Intelligent or More Dependent?
+            </td>
+          </tr>
+
+          <tr>
+            <td class="date">23.11.26</td>
+
+            <td class="coordinator team-team03">
+              Team-03
+            </td>
+
+            <td class="debate-cell debate1 team-tech">
+              Tech Titans
+            </td>
+
+            <td class="debate-cell debate2 team-vox">
+              Vox Victors
+            </td>
+
+            <td class="topic">
+              Human Jobs or Opportunity for Growth?
+            </td>
+          </tr>
+
+          <tr>
+            <td class="date">24.11.26</td>
+
+            <td class="coordinator team-starrex">
+              StarRex
+            </td>
+
+            <td class="debate-cell debate1 team-survivors">
+              Survivors
+            </td>
+
+            <td class="debate-cell debate2 team-team03">
+              Team-03
+            </td>
+
+            <td class="topic">
+              Can AI Replace Software Engineers?
+            </td>
+          </tr>
+
+          <tr>
+            <td class="date">25.11.26</td>
+
+            <td class="coordinator team-aura">
+              Aura Tech
+            </td>
+
+            <td class="debate-cell debate1 team-memory">
+              Memory Rebooters
+            </td>
+
+            <td class="debate-cell debate2 team-nexora">
+              Nexora
+            </td>
+
+            <td class="topic">
+              Will Robots Replace Human Workers in the Future?
+            </td>
+          </tr>
+
+          <tr>
+            <td class="date">27.11.26</td>
+
+            <td class="coordinator team-memory">
+              Memory Rebooters
+            </td>
+
+            <td class="debate-cell debate1 team-starrex">
+              StarRex
+            </td>
+
+            <td class="debate-cell debate2 team-aura">
+              Aura Tech
+            </td>
+
+            <td class="topic">
+              Should the Use of AI Tools Be Allowed in Examinations?
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <div class="footer">
+      AI Debate Schedule • All teams participate in two debates
+    </div>
+
+  </div>
+
+</body>
+</html>
